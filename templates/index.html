@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Multimodal Product Knowledge RAG Assistant</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+</head>
+<body>
+
+  <!-- Sidebar Navigation -->
+  <aside class="sidebar">
+    <div class="brand">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+        <polyline points="2 17 12 22 22 17"></polyline>
+        <polyline points="2 12 12 17 22 12"></polyline>
+      </svg>
+      <span>Product AI RAG</span>
+    </div>
+
+    <ul class="nav-links">
+      <li class="nav-item active" data-page="landing">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+        <span>Overview</span>
+      </li>
+      <li class="nav-item" data-page="dashboard">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
+        <span>Dashboard</span>
+      </li>
+      <li class="nav-item" data-page="analysis">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+        <span>Product Analysis</span>
+      </li>
+      <li class="nav-item" data-page="kb">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+        <span>Knowledge Base</span>
+      </li>
+      <li class="nav-item" data-page="assistant">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+        <span>AI Assistant</span>
+      </li>
+      <li class="nav-item" data-page="troubleshoot">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg>
+        <span>Troubleshooting</span>
+      </li>
+      <li class="nav-item" data-page="settings">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+        <span>Settings</span>
+      </li>
+    </ul>
+
+    <div class="sidebar-footer">
+      <div class="system-status-widget">
+        <div style="color: #94a3b8; font-size: 0.75rem; text-transform: uppercase;">SYSTEM HEALTH</div>
+        <div class="status-badge" id="system-status-badge">
+          <span class="status-dot"></span> System Connected
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- App Main Content Area -->
+  <div class="app-wrapper">
+    <!-- Header Navbar -->
+    <header class="app-header">
+      <div class="header-title-area">
+        <h2 id="header-page-title">Enterprise Product AI Knowledge Platform</h2>
+        <p id="header-page-subtitle">Multimodal RAG, Vision Analytics & Document Intelligence</p>
+      </div>
+
+      <div class="header-right">
+        <div class="search-box">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <input type="text" placeholder="Search product docs...">
+        </div>
+        <div class="user-profile">
+          <div class="avatar">AI</div>
+          <span style="font-size: 0.85rem; font-weight: 600; color: var(--navy-dark);">Enterprise Admin</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="main-content">
+
+      <!-- 1. LANDING PAGE -->
+      <section id="page-landing" class="page-section active">
+        <div class="hero-banner">
+          <div class="hero-content">
+            <span class="hero-tag">Enterprise Multimodal RAG</span>
+            <h1 class="hero-title">AI-Powered Multimodal Product Knowledge</h1>
+            <p class="hero-desc">
+              Understand product images, index hardware manuals, search technical specifications, and receive grounded troubleshooting guidance with explicit page citations.
+            </p>
+            <div class="hero-actions">
+              <button class="btn btn-primary" onclick="navigateTo('analysis')">Analyze Product Image</button>
+              <button class="btn btn-secondary" onclick="navigateTo('assistant')">Ask AI Assistant</button>
+            </div>
+          </div>
+        </div>
+
+        <h3 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 16px; color: var(--navy-dark);">Key Capabilities</h3>
+        <div class="grid-container">
+          <div class="card">
+            <div class="card-title">
+              <span>📷 Visual Image Analysis</span>
+            </div>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.5; margin-bottom: 16px;">
+              Upload images of equipment, serial labels, or components to detect brand, model, and visible ports using Gemini Vision & EasyOCR.
+            </p>
+            <button class="btn btn-secondary" style="width: 100%;" onclick="navigateTo('analysis')">Open Product Vision</button>
+          </div>
+
+          <div class="card">
+            <div class="card-title">
+              <span>📚 ChromaDB Vector RAG</span>
+            </div>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.5; margin-bottom: 16px;">
+              Index PDF manuals, FAQs, and setup guides with PyMuPDF and Sentence Transformers for high-precision semantic search.
+            </p>
+            <button class="btn btn-secondary" style="width: 100%;" onclick="navigateTo('kb')">Manage Knowledge Base</button>
+          </div>
+
+          <div class="card">
+            <div class="card-title">
+              <span>🛠️ Step-by-Step Diagnostics</span>
+            </div>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.5; margin-bottom: 16px;">
+              Get grounded answers with step-by-step diagnostic workflows, error code lookup, and exact document page citations.
+            </p>
+            <button class="btn btn-secondary" style="width: 100%;" onclick="navigateTo('troubleshoot')">Launch Troubleshooting</button>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top: 12px;">
+          <div class="card-title">💡 How It Works</div>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-top: 12px;">
+            <div style="background-color: var(--bg-app); padding: 16px; border-radius: var(--radius-md);">
+              <strong style="color: var(--primary);">1. Upload Documents</strong>
+              <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 4px;">PyMuPDF extracts text; EasyOCR processes scanned text into vector embeddings.</p>
+            </div>
+            <div style="background-color: var(--bg-app); padding: 16px; border-radius: var(--radius-md);">
+              <strong style="color: var(--primary);">2. ChromaDB Indexing</strong>
+              <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 4px;">SentenceTransformers generates 384-dim dense vectors tagged with product metadata.</p>
+            </div>
+            <div style="background-color: var(--bg-app); padding: 16px; border-radius: var(--radius-md);">
+              <strong style="color: var(--primary);">3. Grounded Gemini AI</strong>
+              <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 4px;">Contextualized prompts generate hallucination-free answers with page citations.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. DASHBOARD -->
+      <section id="page-dashboard" class="page-section">
+        <div class="page-header">
+          <h1 class="page-title">Enterprise Dashboard</h1>
+          <p class="page-subtitle">Real-time status of vector indices, processing services, and system metrics.</p>
+        </div>
+
+        <div class="grid-container">
+          <div class="card">
+            <div style="color: var(--text-muted); font-size: 0.8rem; font-weight: 600;">PRODUCTS ANALYZED</div>
+            <div style="font-size: 2rem; font-weight: 800; color: var(--navy-dark); margin: 6px 0;" id="dash-products-analyzed">0</div>
+            <span style="font-size: 0.8rem; color: var(--status-success);">● Gemini Vision Active</span>
+          </div>
+          <div class="card">
+            <div style="color: var(--text-muted); font-size: 0.8rem; font-weight: 600;">KNOWLEDGE DOCUMENTS</div>
+            <div style="font-size: 2rem; font-weight: 800; color: var(--navy-dark); margin: 6px 0;" id="stat-docs-count">0</div>
+            <span style="font-size: 0.8rem; color: var(--primary);">● Indexed in ChromaDB</span>
+          </div>
+          <div class="card">
+            <div style="color: var(--text-muted); font-size: 0.8rem; font-weight: 600;">QUESTIONS ANSWERED</div>
+            <div style="font-size: 2rem; font-weight: 800; color: var(--navy-dark); margin: 6px 0;" id="dash-queries-count">0</div>
+            <span style="font-size: 0.8rem; color: var(--status-success);">● Grounded RAG</span>
+          </div>
+          <div class="card">
+            <div style="color: var(--text-muted); font-size: 0.8rem; font-weight: 600;">TROUBLESHOOTING SESSIONS</div>
+            <div style="font-size: 2rem; font-weight: 800; color: var(--navy-dark); margin: 6px 0;" id="dash-troubleshoot-count">0</div>
+            <span style="font-size: 0.8rem; color: var(--status-warning);">● Active Diagnostic Wizards</span>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px; margin-bottom: 24px;">
+          <div class="card">
+            <div class="card-title">⚡ System Status Services</div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px;">
+              <div style="padding: 12px; border: 1px solid var(--card-border); border-radius: var(--radius-md);">
+                <strong style="font-size: 0.9rem;">Flask REST API</strong>
+                <p style="font-size: 0.8rem; color: var(--status-success); margin-top: 2px;">● Operational (Port 5000)</p>
+              </div>
+              <div style="padding: 12px; border: 1px solid var(--card-border); border-radius: var(--radius-md);">
+                <strong style="font-size: 0.9rem;">ChromaDB Vector DB</strong>
+                <p style="font-size: 0.8rem; color: var(--status-success); margin-top: 2px;">● Operational (Persistent)</p>
+              </div>
+              <div style="padding: 12px; border: 1px solid var(--card-border); border-radius: var(--radius-md);">
+                <strong style="font-size: 0.9rem;">EasyOCR Engine</strong>
+                <p style="font-size: 0.8rem; color: var(--status-success); margin-top: 2px;">● Ready (PyTorch CPU)</p>
+              </div>
+              <div style="padding: 12px; border: 1px solid var(--card-border); border-radius: var(--radius-md);">
+                <strong style="font-size: 0.9rem;">Gemini Multimodal AI</strong>
+                <p style="font-size: 0.8rem; color: var(--status-success); margin-top: 2px;" id="dash-gemini-status">● Connected</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">🚀 Quick Actions</div>
+            <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 8px;">
+              <button class="btn btn-secondary" style="justify-content: flex-start;" onclick="navigateTo('analysis')">📷 Analyze Product Image</button>
+              <button class="btn btn-secondary" style="justify-content: flex-start;" onclick="navigateTo('kb')">📤 Upload Manual PDF</button>
+              <button class="btn btn-secondary" style="justify-content: flex-start;" onclick="navigateTo('assistant')">🤖 Ask AI Assistant</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. PRODUCT ANALYSIS PAGE -->
+      <section id="page-analysis" class="page-section">
+        <div class="page-header">
+          <h1 class="page-title">Product Image Analysis</h1>
+          <p class="page-subtitle">Upload a product image to inspect specifications, identify serial labels, and read embedded text.</p>
+        </div>
+
+        <div class="two-column-layout">
+          <!-- LEFT COLUMN: Image Upload & Preview -->
+          <div class="card">
+            <div class="card-title">📷 Upload Image</div>
+            <div class="dropzone" id="vision-dropzone">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="color: var(--primary); margin-bottom: 12px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+              <p style="font-weight: 600; color: var(--navy-dark); margin-bottom: 4px;">Drag & drop product image here</p>
+              <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 14px;">Supports JPG, PNG, WEBP (Max 32MB)</p>
+              <button class="btn btn-secondary" type="button">Browse Files</button>
+            </div>
+            <input type="file" id="vision-file-input" accept="image/*" style="display: none;">
+
+            <div class="image-preview-container" id="vision-preview-container">
+              <img id="vision-image-preview" src="" alt="Product Preview">
+              <button class="btn btn-danger" id="vision-remove-btn" style="position: absolute; top: 10px; right: 10px; padding: 4px 10px; font-size: 0.8rem;">Remove</button>
+            </div>
+          </div>
+
+          <!-- RIGHT COLUMN: Inspection Results -->
+          <div class="card">
+            <div class="card-title">🔍 Detection & Vision Results</div>
+
+            <!-- Empty State -->
+            <div id="vision-empty-state" style="text-align: center; padding: 40px 20px; color: var(--text-muted);">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" style="margin-bottom: 12px;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+              <p>No product image uploaded yet. Drag an image into the upload box on the left to begin identification.</p>
+            </div>
+
+            <!-- Loading State -->
+            <div id="vision-loading-state" style="display: none; text-align: center; padding: 40px 20px;">
+              <div style="font-size: 1.1rem; font-weight: 600; color: var(--primary); margin-bottom: 8px;">⚡ Analyzing Product Image...</div>
+              <p style="color: var(--text-muted); font-size: 0.85rem;">Running EasyOCR text detection & Gemini Vision AI analysis...</p>
+            </div>
+
+            <!-- Result Content -->
+            <div id="vision-result-content" style="display: none;">
+              <div style="background-color: var(--primary-light); border: 1px solid var(--primary-border); border-radius: var(--radius-md); padding: 14px; margin-bottom: 16px;">
+                <div style="font-size: 0.8rem; color: var(--primary); font-weight: 600;">DETECTED MODEL / BRAND</div>
+                <div id="res-product-name" style="font-size: 1.3rem; font-weight: 700; color: var(--navy-dark); margin-top: 2px;"></div>
+              </div>
+
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px;">
+                <div>
+                  <label style="font-size: 0.8rem; color: var(--text-muted);">Category</label>
+                  <div id="res-category" style="font-weight: 600;"></div>
+                </div>
+                <div>
+                  <label style="font-size: 0.8rem; color: var(--text-muted);">Confidence Score</label>
+                  <div id="res-confidence" style="font-weight: 700; color: var(--status-success);"></div>
+                </div>
+              </div>
+
+              <div style="margin-bottom: 16px;">
+                <label style="font-size: 0.8rem; color: var(--text-muted); display: block; margin-bottom: 6px;">Detected Hardware Features</label>
+                <div id="res-features"></div>
+              </div>
+
+              <div>
+                <label style="font-size: 0.8rem; color: var(--text-muted); display: block; margin-bottom: 4px;">Technical Summary</label>
+                <p id="res-summary" style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5; background-color: var(--bg-app); padding: 12px; border-radius: var(--radius-md); border: 1px solid var(--card-border);"></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4. KNOWLEDGE BASE PAGE -->
+      <section id="page-kb" class="page-section">
+        <div class="page-header">
+          <h1 class="page-title">Document Knowledge Base</h1>
+          <p class="page-subtitle">Upload product user guides, specification sheets, and troubleshooting manuals into ChromaDB.</p>
+        </div>
+
+        <div class="card" style="margin-bottom: 24px;">
+          <div class="card-title">📤 Upload Document</div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+            <div>
+              <label style="font-size: 0.85rem; font-weight: 600; color: var(--navy-dark); display: block; margin-bottom: 6px;">Target Product ID / Model String</label>
+              <input type="text" id="kb-product-id" class="input-field" placeholder="e.g. Model-X200 or general" value="general">
+            </div>
+            <div>
+              <label style="font-size: 0.85rem; font-weight: 600; color: var(--navy-dark); display: block; margin-bottom: 6px;">Select Document File (.pdf, .txt, .md)</label>
+              <input type="file" id="kb-doc-input" class="input-field" accept=".pdf,.txt,.md">
+            </div>
+          </div>
+
+          <!-- Processing Stepper Bar -->
+          <div class="stepper">
+            <div class="step-item" id="step-upload">1. Uploaded</div>
+            <div class="step-item" id="step-extract">2. Extracted</div>
+            <div class="step-item" id="step-chunk">3. Chunked</div>
+            <div class="step-item" id="step-embed">4. Embedded</div>
+            <div class="step-item" id="step-chroma">5. Stored in ChromaDB</div>
+          </div>
+
+          <button id="kb-upload-btn" class="btn btn-primary">Upload & Ingest Document</button>
+        </div>
+
+        <div class="card">
+          <div class="card-title">📑 Indexed Product Documents</div>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Document</th>
+                <th>Type</th>
+                <th>Product ID</th>
+                <th>Chunks</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="documents-table-body">
+              <tr><td colspan="6" style="text-align:center; color: var(--text-muted); padding: 30px;">Loading indexed documents from ChromaDB...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- 5. AI PRODUCT ASSISTANT PAGE -->
+      <section id="page-assistant" class="page-section">
+        <div class="page-header">
+          <h1 class="page-title">AI Product Assistant</h1>
+          <p class="page-subtitle">Ask questions about product manuals, installation, or specifications with grounded citations.</p>
+        </div>
+
+        <div class="chat-container">
+          <div class="chat-header">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <span style="font-weight: 700; color: var(--navy-dark);">Active Product Context:</span>
+              <select id="chat-product-select" class="select-field" style="width: auto; margin-bottom: 0; padding: 6px 12px; font-size: 0.85rem;">
+                <option value="all">All Indexed Products</option>
+                <option value="general">General Knowledge</option>
+              </select>
+            </div>
+            <span style="font-size: 0.8rem; color: var(--status-success); font-weight: 600;">● Grounded Gemini RAG</span>
+          </div>
+
+          <div class="chat-messages" id="chat-messages">
+            <!-- Polished Chat Empty State -->
+            <div id="chat-empty-state" style="margin: auto; text-align: center; max-width: 520px; padding: 32px 16px;">
+              <div style="width: 56px; height: 56px; border-radius: 50%; background-color: var(--primary-light); color: var(--primary); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px auto; border: 1px solid var(--primary-border);">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+              </div>
+              <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--navy-dark); margin-bottom: 6px;">AI Product Knowledge Assistant</h3>
+              <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 24px;">Ask anything about your product documentation, specifications, or installation procedures.</p>
+
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; text-align: left;">
+                <div class="chip" style="border-radius: var(--radius-md); padding: 12px; height: auto;" onclick="askSuggested('What are the product specifications?')">
+                  <strong style="display: block; color: var(--navy-dark); font-size: 0.85rem; margin-bottom: 2px;">Specifications</strong>
+                  <span style="font-size: 0.8rem; color: var(--text-muted);">What are the product specifications?</span>
+                </div>
+                <div class="chip" style="border-radius: var(--radius-md); padding: 12px; height: auto;" onclick="askSuggested('How do I install this product?')">
+                  <strong style="display: block; color: var(--navy-dark); font-size: 0.85rem; margin-bottom: 2px;">Installation Guide</strong>
+                  <span style="font-size: 0.8rem; color: var(--text-muted);">How do I install this product?</span>
+                </div>
+                <div class="chip" style="border-radius: var(--radius-md); padding: 12px; height: auto;" onclick="askSuggested('What does this error code mean?')">
+                  <strong style="display: block; color: var(--navy-dark); font-size: 0.85rem; margin-bottom: 2px;">Error Lookup</strong>
+                  <span style="font-size: 0.8rem; color: var(--text-muted);">What does this error code mean?</span>
+                </div>
+                <div class="chip" style="border-radius: var(--radius-md); padding: 12px; height: auto;" onclick="askSuggested('How do I troubleshoot this issue?')">
+                  <strong style="display: block; color: var(--navy-dark); font-size: 0.85rem; margin-bottom: 2px;">Troubleshooting</strong>
+                  <span style="font-size: 0.8rem; color: var(--text-muted);">How do I troubleshoot this issue?</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="chat-input-area">
+            <input type="text" id="chat-input" class="input-field" placeholder="Ask a question about your product documentation..." style="margin-bottom: 0;">
+            <button id="chat-send-btn" class="btn btn-primary">Send Question</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 6. TROUBLESHOOTING PAGE -->
+      <section id="page-troubleshoot" class="page-section">
+        <div class="page-header">
+          <h1 class="page-title">Product Troubleshooting Wizard</h1>
+          <p class="page-subtitle">Diagnose issues, resolve error codes, and follow step-by-step remedy procedures.</p>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px;">
+          <!-- SECTION 1: Select Product / Context -->
+          <div class="card">
+            <div class="card-title">SECTION 1: Select Product Context</div>
+            <label style="font-size: 0.85rem; font-weight: 600; color: var(--navy-dark); display: block; margin-bottom: 6px;">Target Product Model</label>
+            <select id="troubleshoot-product-select" class="select-field" style="margin-bottom: 0;">
+              <option value="all">All Indexed Products</option>
+              <option value="general">General Documents</option>
+            </select>
+          </div>
+
+          <!-- SECTION 2: Issue or Error Code -->
+          <div class="card">
+            <div class="card-title">SECTION 2: Issue Details</div>
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+              <input type="text" id="troubleshoot-error-input" class="input-field" placeholder="Error code (e.g. E-04)" style="margin-bottom: 0;">
+              <input type="text" id="troubleshoot-symptom-input" class="input-field" placeholder="Primary symptom (e.g. No Internet connection)" style="margin-bottom: 0;">
+              <textarea id="troubleshoot-desc-input" class="input-field" placeholder="Detailed description..." style="margin-bottom: 0; resize: vertical; min-height: 60px;"></textarea>
+              <button class="btn btn-primary" id="troubleshoot-search-btn">Diagnose</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION 3: Suggested Issue Shortcuts -->
+        <div class="card" style="margin-bottom: 24px;">
+          <div class="card-title">SECTION 3: Suggested Issue Shortcuts</div>
+          <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <button class="btn btn-secondary" onclick="runDiagnostic('Device fails to power on or LED blinks red')">Power / LED Failure</button>
+            <button class="btn btn-secondary" onclick="runDiagnostic('How do I reset to factory default settings?')">Factory Reset</button>
+            <button class="btn btn-secondary" onclick="runDiagnostic('Overheating warning or fan noise issue')">Overheating / Noise</button>
+            <button class="btn btn-secondary" onclick="runDiagnostic('Network connectivity and pairing failure')">Connectivity Issue</button>
+          </div>
+        </div>
+
+        <!-- SECTION 4: Diagnosis Result Area -->
+        <div class="card" style="margin-bottom: 24px;">
+          <div class="card-title">SECTION 4: Diagnosis Result</div>
+          <div id="troubleshoot-diagnosis-area">
+            <div style="text-align: center; padding: 24px; color: var(--text-muted); font-size: 0.9rem;">
+              Enter an error code or describe the issue above to begin diagnosis.
+            </div>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 20px;">
+          <!-- SECTION 5: Step-by-Step Troubleshooting Area -->
+          <div class="card">
+            <div class="card-title">SECTION 5: Step-by-Step Troubleshooting</div>
+            <div id="troubleshoot-steps-area">
+              <div style="text-align: center; padding: 24px; color: var(--text-muted); font-size: 0.9rem;">
+                Remedy steps will be generated here after diagnosis.
+              </div>
+            </div>
+          </div>
+
+          <!-- SECTION 6: Sources / Citations Area -->
+          <div class="card">
+            <div class="card-title">SECTION 6: Sources / Citations</div>
+            <div id="troubleshoot-sources-area">
+              <div style="text-align: center; padding: 24px; color: var(--text-muted); font-size: 0.9rem;">
+                No manual sources cited yet.
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 7. SETTINGS PAGE -->
+      <section id="page-settings" class="page-section">
+        <div class="page-header">
+          <h1 class="page-title">System Configuration & Settings</h1>
+          <p class="page-subtitle">Overview of configured AI models, vector storage engines, and processing parameters.</p>
+        </div>
+        <div class="card">
+          <div class="card-title">⚙️ Architecture & Model Configurations</div>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-top: 14px;">
+            <div style="background-color: var(--bg-app); border: 1px solid var(--card-border); border-radius: var(--radius-md); padding: 16px;">
+              <strong style="color: var(--navy-dark); font-size: 0.9rem; display: block; margin-bottom: 4px;">Vector Database</strong>
+              <span style="font-size: 0.85rem; color: var(--primary); font-weight: 600;">ChromaDB • Persistent Storage</span>
+            </div>
+
+            <div style="background-color: var(--bg-app); border: 1px solid var(--card-border); border-radius: var(--radius-md); padding: 16px;">
+              <strong style="color: var(--navy-dark); font-size: 0.9rem; display: block; margin-bottom: 4px;">Embedding Engine</strong>
+              <span style="font-size: 0.85rem; color: var(--text-secondary); font-weight: 600;" id="settings-embedding-model">Sentence Transformers (all-MiniLM-L6-v2)</span>
+            </div>
+
+            <div style="background-color: var(--bg-app); border: 1px solid var(--card-border); border-radius: var(--radius-md); padding: 16px;">
+              <strong style="color: var(--navy-dark); font-size: 0.9rem; display: block; margin-bottom: 4px;">Multimodal LLM Engine</strong>
+              <span style="font-size: 0.85rem; color: var(--text-secondary); font-weight: 600;" id="settings-llm-model">Gemini Multimodal Model</span>
+            </div>
+
+            <div style="background-color: var(--bg-app); border: 1px solid var(--card-border); border-radius: var(--radius-md); padding: 16px;">
+              <strong style="color: var(--navy-dark); font-size: 0.9rem; display: block; margin-bottom: 4px;">OCR Engine</strong>
+              <span style="font-size: 0.85rem; color: var(--text-secondary); font-weight: 600;">EasyOCR (Local Reader)</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <script src="{{ url_for('static', filename='js/app.js') }}?v=2"></script>
+</body>
+</html>
