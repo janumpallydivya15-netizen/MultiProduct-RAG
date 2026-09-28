@@ -7,6 +7,7 @@ class OCREngine:
             languages = ['en']
         self.languages = languages
         self._reader = None
+        self.last_error = None
 
     @property
     def reader(self):
@@ -17,6 +18,7 @@ class OCREngine:
                 # Disable GPU if CUDA is not configured to avoid warnings
                 self._reader = easyocr.Reader(self.languages, gpu=False)
             except Exception as e:
+                self.last_error = str(e)
                 print(f"[OCREngine] Warning: EasyOCR reader initialization deferred/failed: {e}")
                 return None
         return self._reader
@@ -26,6 +28,7 @@ class OCREngine:
         if not os.path.exists(image_path):
             raise FileNotFoundError(f"Image not found at path: {image_path}")
 
+        self.last_error = None
         reader = self.reader
         if reader is None:
             return ""
@@ -34,6 +37,7 @@ class OCREngine:
             results = reader.readtext(image_path, detail=0)
             return "\n".join(results)
         except Exception as e:
+            self.last_error = str(e)
             print(f"[OCREngine] Error processing image {image_path}: {e}")
             return ""
 

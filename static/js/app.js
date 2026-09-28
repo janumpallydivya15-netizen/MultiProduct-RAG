@@ -134,6 +134,10 @@ function initVisionModule() {
                 document.getElementById('res-category').textContent = data.category || 'N/A';
                 document.getElementById('res-confidence').textContent = `${Math.round((data.confidence || 0) * 100)}%`;
                 document.getElementById('res-summary').textContent = data.summary || '';
+                document.getElementById('res-ocr-status').textContent = data.ocr_error
+                    ? `OCR unavailable: ${data.ocr_error}`
+                    : (data.ocr_text_extracted ? 'Text detected' : 'No readable text detected');
+                document.getElementById('res-ocr-text').textContent = data.ocr_text_extracted || '';
 
                 const featuresEl = document.getElementById('res-features');
                 featuresEl.innerHTML = (data.detected_features || []).map(f =>
@@ -145,7 +149,12 @@ function initVisionModule() {
                 if (dashCount) dashCount.textContent = parseInt(dashCount.textContent || 0) + 1;
             } else {
                 emptyState.style.display = 'block';
-                emptyState.innerHTML = `<p style="color: var(--status-danger);">Analysis failed: ${payload.error || 'Unknown error'}</p>`;
+                const message = payload.message || payload.error || 'Unknown error';
+                const ocrWarning = payload.ocr_warning ? ` OCR warning: ${payload.ocr_warning}` : '';
+                const errorMessage = document.createElement('p');
+                errorMessage.style.color = 'var(--status-danger)';
+                errorMessage.textContent = `Analysis failed: ${message}${ocrWarning}`;
+                emptyState.replaceChildren(errorMessage);
             }
         } catch (err) {
             loadingState.style.display = 'none';

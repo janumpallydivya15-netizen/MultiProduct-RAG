@@ -30,10 +30,12 @@ def analyze_product_image():
     try:
         # Run EasyOCR on image to extract any visible model labels or text tags
         ocr_text = ocr_engine.extract_text_from_image(save_path)
+        ocr_error = ocr_engine.last_error
 
         # Run Gemini Vision analysis
         analysis_result = gemini_client.analyze_product_image(save_path, ocr_text=ocr_text)
         analysis_result["ocr_text_extracted"] = ocr_text
+        analysis_result["ocr_error"] = ocr_error
         analysis_result["image_filename"] = temp_filename
 
         return jsonify({"status": "success", "data": analysis_result}), 200
@@ -42,5 +44,7 @@ def analyze_product_image():
         print(f"Vision API Error: {str(e)}")
         return jsonify({
             "status": "error",
-            "message": "Gemini Vision is currently unavailable. Please check the configured Gemini API key and model."
+            "stage": "vision",
+            "message": "Product image analysis failed. Check the Gemini API key and model configuration.",
+            "ocr_warning": ocr_engine.last_error
         }), 500
